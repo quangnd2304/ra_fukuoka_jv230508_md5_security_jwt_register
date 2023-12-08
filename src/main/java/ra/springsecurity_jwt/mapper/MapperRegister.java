@@ -1,6 +1,7 @@
 package ra.springsecurity_jwt.mapper;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
 import ra.springsecurity_jwt.dto.request.RegisterRequest;
 import ra.springsecurity_jwt.dto.response.RegisterResponse;
@@ -17,6 +18,8 @@ import java.util.Set;
 public class MapperRegister implements MapperGeneric<Users, RegisterRequest, RegisterResponse> {
     @Autowired
     private RolesService rolesService;
+    @Autowired
+    private PasswordEncoder passwordEncoder;
 
     @Override
     public Users mapperRequestToEntity(RegisterRequest registerRequest) {
@@ -50,7 +53,8 @@ public class MapperRegister implements MapperGeneric<Users, RegisterRequest, Reg
             });
         }
         return Users.builder().userName(registerRequest.getUserName())
-                .password(registerRequest.getPassword())
+                //Mã hóa mật khẩu người dùng khi đăng ký
+                .password(passwordEncoder.encode(registerRequest.getPassword()))
                 .email(registerRequest.getEmail())
                 .phone(registerRequest.getPhone())
                 .address(registerRequest.getAddress())
